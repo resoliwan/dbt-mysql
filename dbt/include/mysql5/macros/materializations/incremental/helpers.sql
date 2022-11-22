@@ -2,14 +2,14 @@
 {% macro incremental_delete(tmp_relation, target_relation, unique_key=none, statement_name="pre_main") %}
     {% if unique_key is not none %}
         {% if unique_key is sequence and unique_key is not string %}
-            delete from {{target_relation }}
-            using {{ tmp_relation }}
-            where (
+            delete {{target_relation }}
+            from {{target_relation }}, {{ tmp_relation }}
+            where
                 {% for key in unique_key %}
                     {{ tmp_relation }}.{{ key }} = {{ target_relation }}.{{ key }}
                     {{ "and " if not loop.last }}
                 {% endfor %}
-            );
+            ;
         {% else %}
             delete from {{ target_relation }}
             where (
